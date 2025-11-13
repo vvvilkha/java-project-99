@@ -1,12 +1,12 @@
 plugins {
     application
     checkstyle
+    jacoco
     id("org.springframework.boot") version "3.5.7"
     id("io.spring.dependency-management") version "1.1.7"
     id("io.freefair.lombok") version "8.6"
     id("org.sonarqube") version "7.0.1.6134"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("jacoco")
 }
 
 group = "hexlet.code"
@@ -31,6 +31,17 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.2.0")
+
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
+    implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.postgresql:postgresql")

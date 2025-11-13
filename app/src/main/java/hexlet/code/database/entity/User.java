@@ -1,5 +1,6 @@
-package hexlet.code.model;
+package hexlet.code.database.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @Setter
 @Table(name = "users")
-public class User {
+public class User implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -36,9 +37,11 @@ public class User {
 
     private String lastName;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
-    private String password;
+    @Column(nullable = false)
+    private String passwordDigest;
 
     @CreatedDate
     private LocalDateTime createdAt;
