@@ -7,7 +7,7 @@ plugins {
     id("io.freefair.lombok") version "8.6"
     id("org.sonarqube") version "7.0.1.6134"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.sentry.jvm.gradle") version "5.3.0"
+    id("io.sentry.jvm.gradle") version "5.12.2"
 }
 
 group = "hexlet.code"
@@ -81,4 +81,16 @@ tasks.jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
     }
+}
+
+sentry {
+    includeSourceContext = true
+
+    org = "no-tru"
+    projectName = "java-spring-boot"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+}
+
+tasks.sentryBundleSourcesJava {
+    enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 }
