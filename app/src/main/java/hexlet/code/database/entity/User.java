@@ -3,6 +3,7 @@ package hexlet.code.database.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +34,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class User implements UserDetails, BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;

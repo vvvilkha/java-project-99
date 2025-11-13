@@ -3,6 +3,7 @@ package hexlet.code.database.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -24,8 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -39,7 +39,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name = "tasks")
 public class Task implements BaseEntity {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
@@ -67,5 +67,7 @@ public class Task implements BaseEntity {
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id")
     )
+
+    @Builder.Default
     private Set<Label> labels = new HashSet<>();
 }
