@@ -1,11 +1,10 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.exception.NotFoundException;
-import hexlet.code.mapper.UserMapper;
-import hexlet.code.database.entity.User;
+import hexlet.code.database.entity.TaskStatus;
 import hexlet.code.database.repository.TaskRepository;
-import hexlet.code.database.repository.UserRepository;
+import hexlet.code.database.repository.TaskStatusRepository;
+import hexlet.code.exception.NotFoundException;
 import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class UserControllerTest {
+public class TaskStatusControllerTest {
+
     @Autowired
     private WebApplicationContext wac;
 
@@ -46,49 +46,45 @@ class UserControllerTest {
     private ObjectMapper om;
 
     @Autowired
-    private UserRepository userRepository;
+    private TaskStatusRepository taskStatusRepository;
 
     @Autowired
     private TaskRepository taskRepository;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private ModelGenerator modelGenerator;
 
-    private User testUser;
+    private TaskStatus testTaskStatus;
 
     @BeforeEach
     public void setUp() {
         taskRepository.deleteAll();
-        userRepository.deleteAll();
+        taskStatusRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
                 .build();
 
-        testUser = Instancio.of(modelGenerator.getUserModel()).create();
-        userRepository.save(testUser);
+        testTaskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
+        taskStatusRepository.save(testTaskStatus);
     }
 
     @Test
     public void testIndex() throws Exception {
-        var request = get("/api/users").with(jwt());
+        var request = get("/api/task_statuses").with(jwt());
 
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-
         assertThatJson(body).isArray();
     }
 
     @Test
     public void testIndexWithoutAuth() throws Exception {
-        var request = get("/api/users");
+        var request = get("/api/task_statuses");
 
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
@@ -96,7 +92,7 @@ class UserControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        var request = get("/api/users/" + testUser.getId()).with(jwt());
+        var request = get("/api/task_statuses/" + testTaskStatus.getId()).with(jwt());
 
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -105,14 +101,13 @@ class UserControllerTest {
         var body = result.getResponse().getContentAsString();
 
         assertThatJson(body).and(
-                v -> v.node("email").isEqualTo(testUser.getEmail()),
-                v -> v.node("firstName").isEqualTo(testUser.getFirstName()),
-                v -> v.node("lastName").isEqualTo(testUser.getLastName()));
+                v -> v.node("name").isEqualTo(testTaskStatus.getName()),
+                v -> v.node("slug").isEqualTo(testTaskStatus.getSlug()));
     }
 
     @Test
     public void testShowWithoutAuth() throws Exception {
-        var request = get("/api/users/" + testUser.getId());
+        var request = get("/api/task_statuses/" + testTaskStatus.getId());
 
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
@@ -120,30 +115,28 @@ class UserControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getUserModel()).create();
+        var data = Instancio.of(modelGenerator.getTaskStatusModel()).create();
 
-        var request = post("/api/users").with(jwt())
+        var request = post("/api/task_statuses").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var user = userRepository.findByEmail(data.getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        var taskStatus = taskStatusRepository.findBySlug(data.getSlug())
+                .orElseThrow(() -> new NotFoundException("Task status not found"));
 
-        assertThat(user).isNotNull();
-        assertThat(user.getFirstName()).isEqualTo(data.getFirstName());
-        assertThat(user.getLastName()).isEqualTo(data.getLastName());
-        assertThat(user.getEmail()).isEqualTo(data.getEmail());
-        assertThat(user.getPasswordDigest()).isNotEqualTo(data.getPasswordDigest());
+        assertThat(taskStatus).isNotNull();
+        assertThat(taskStatus.getName()).isEqualTo(data.getName());
+        assertThat(taskStatus.getSlug()).isEqualTo(data.getSlug());
     }
 
     @Test
     public void testCreateWithoutAuth() throws Exception {
-        var request = post("/api/users")
+        var request = post("/api/task_statuses")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(testUser));
+                .content(om.writeValueAsString(testTaskStatus));
 
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
@@ -152,28 +145,28 @@ class UserControllerTest {
     @Test
     public void testUpdate() throws Exception {
         var data = new HashMap<>();
-        data.put("firstName", "Mike");
+        data.put("name", "newStatus");
 
-        var request = put("/api/users/" + testUser.getId()).with(jwt())
+        var request = put("/api/task_statuses/" + testTaskStatus.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var user = userRepository.findByEmail(testUser.getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        var taskStatus = taskStatusRepository.findBySlug(testTaskStatus.getSlug())
+                .orElseThrow(() -> new RuntimeException("Task status not found"));
 
-        assertThat(user).isNotNull();
-        assertThat(user.getFirstName()).isEqualTo(data.get("firstName"));
+        assertThat(taskStatus).isNotNull();
+        assertThat(taskStatus.getName()).isEqualTo("newStatus");
     }
 
     @Test
     public void testUpdateWithoutAuth() throws Exception {
         var data = new HashMap<>();
-        data.put("firstName", "Mike");
+        data.put("name", "newStatus");
 
-        var request = put("/api/users/" + testUser.getId())
+        var request = put("/api/task_statuses/" + testTaskStatus.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -183,18 +176,18 @@ class UserControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        var request = delete("/api/users/" + testUser.getId()).with(jwt());
+        var request = delete("/api/task_statuses/" + testTaskStatus.getId()).with(jwt());
 
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
-        var user = userRepository.findByEmail(testUser.getEmail());
-        assertThat(user).isEmpty();
+        var taskStatus = taskStatusRepository.findBySlug(testTaskStatus.getSlug());
+        assertThat(taskStatus).isEmpty();
     }
 
     @Test
     public void testDeleteWithoutAuth() throws Exception {
-        var request = delete("/api/users/" + testUser.getId());
+        var request = delete("/api/task_statuses/" + testTaskStatus.getId());
 
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
