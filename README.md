@@ -3,3 +3,7 @@
 [![Java CI](https://sonarcloud.io/api/project_badges/measure?project=vvvilkha_java-project-99&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=vvvilkha_java-project-99)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=vvvilkha_java-project-99&metric=bugs)](https://sonarcloud.io/summary/new_code?id=vvvilkha_java-project-99)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=vvvilkha_java-project-99&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=vvvilkha_java-project-99)
+
+---
+
+Сервис управления задачами -  https://task-management-pw5o.onrender.com

@@ -68,6 +68,7 @@ sonar {
     properties {
         property("sonar.projectKey", "vvvilkha_java-project-99")
         property("sonar.organization", "vvvilkha")
+        property("sonar.coverage.exclusions", "src/main/java/**/*")
     }
 }
 
