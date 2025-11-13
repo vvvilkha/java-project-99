@@ -1,9 +1,9 @@
 package hexlet.code.controller;
 
 import hexlet.code.database.repository.UserRepository;
-import hexlet.code.dto.UserCreateDTO;
-import hexlet.code.dto.UserDTO;
-import hexlet.code.dto.UserUpdateDTO;
+import hexlet.code.dto.user.UserCreateDTO;
+import hexlet.code.dto.user.UserDTO;
+import hexlet.code.dto.user.UserUpdateDTO;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.mapper.UserMapper;
 import jakarta.validation.Valid;
