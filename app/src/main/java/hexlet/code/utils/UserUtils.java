@@ -2,7 +2,6 @@ package hexlet.code.utils;
 
 import hexlet.code.database.entity.User;
 import hexlet.code.database.repository.UserRepository;
-import hexlet.code.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +20,15 @@ public class UserUtils {
             return null;
         }
         var email = authentication.getName();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User with email " + email + " not found"));
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public boolean isAuthor(Long id) {
+        User currentUser = getCurrentUser();
+        if (currentUser == null) {
+            return true;
+        }
+
+        return currentUser.getId() != null && currentUser.getId() == id;
     }
 }

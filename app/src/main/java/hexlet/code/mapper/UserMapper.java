@@ -27,12 +27,18 @@ public abstract class UserMapper {
 
     @Mapping(target = "passwordDigest", source = "password")
     public abstract User map(UserCreateDTO dto);
-    public abstract void update(UserUpdateDTO dto, @MappingTarget User entity);
-    public abstract UserDTO map(User user);
+
+    public abstract UserDTO map(User model);
+
+    public abstract User map(UserDTO dto);
+
+    public abstract void update(UserUpdateDTO dto, @MappingTarget User model);
+
 
     @BeforeMapping
     public void encryptPassword(UserCreateDTO data) {
-        var password = data.getPassword();
-        data.setPassword(encoder.encode(password));
+            var password = data.getPassword();
+            data.setPassword(encoder.encode(password));
     }
 }
+

@@ -154,15 +154,16 @@ class UserControllerTest {
         var data = new HashMap<>();
         data.put("firstName", "Mike");
 
-        var request = put("/api/users/" + testUser.getId()).with(jwt())
+        var request = put("/api/users/" + testUser.getId())
+                .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var user = userRepository.findByEmail(testUser.getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        var user = userRepository.findById(testUser.getId())
+                .orElseThrow();
 
         assertThat(user).isNotNull();
         assertThat(user.getFirstName()).isEqualTo(data.get("firstName"));
@@ -184,12 +185,10 @@ class UserControllerTest {
     @Test
     public void testDelete() throws Exception {
         var request = delete("/api/users/" + testUser.getId()).with(jwt());
-
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
-        var user = userRepository.findByEmail(testUser.getEmail());
-        assertThat(user).isEmpty();
+        assertThat(userRepository.existsById(testUser.getId())).isEqualTo(false);
     }
 
     @Test

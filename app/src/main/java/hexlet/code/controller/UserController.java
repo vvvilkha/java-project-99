@@ -70,13 +70,13 @@ public class UserController {
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
         userMapper.update(userData, user);
         userRepository.save(user);
-        return  userMapper.map(user);
+        return userMapper.map(user);
     }
 
-    @DeleteMapping(path = "/users/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@userUtils.isAuthor(#id)")
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable Long id) {
         userRepository.deleteById(id);
     }
 }
