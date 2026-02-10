@@ -3,48 +3,19 @@ package hexlet.code.service;
 import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
-import hexlet.code.exception.NotFoundException;
-import hexlet.code.mapper.UserMapper;
-import hexlet.code.database.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class UserService {
+public interface UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    List<UserDTO> getAllUsers();
 
-    @Autowired
-    private UserMapper userMapper;
+    UserDTO getUserById(long id);
 
-    public List<UserDTO> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(userMapper::map)
-                .toList();
-    }
+    UserDTO createUser(UserCreateDTO userData);
 
-    public UserDTO getUserById(long id) {
-        return userMapper.map(userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found!")));
-    }
+    UserDTO updateUser(long id, UserUpdateDTO userData);
 
-    public UserDTO createUser(UserCreateDTO userData) {
-        return userMapper.map(userRepository.save(userMapper.map(userData)));
-    }
-
-    public UserDTO updateUser(long id, UserUpdateDTO userData) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found!"));
-        userMapper.update(userData, user);
-        return userMapper.map(userRepository.save(user));
-    }
-
-    public void deleteUser(long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found!"));
-        userRepository.delete(user);
-    }
+    void deleteUser(long id);
 }
+

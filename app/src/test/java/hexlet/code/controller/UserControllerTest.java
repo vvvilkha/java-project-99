@@ -1,6 +1,7 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.dto.user.UserDTO;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.database.entity.User;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -82,7 +84,18 @@ class UserControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+        var usersFromController = java.util.Arrays.stream(om.readValue(body, UserDTO[].class))
+                .sorted(Comparator.comparing(UserDTO::getId))
+                .toList();
+        var usersFromDb = userRepository.findAll().stream()
+                .map(userMapper::map)
+                .sorted(Comparator.comparing(UserDTO::getId))
+                .toList();
 
+        assertThatJson(body).isArray();
+        assertThat(usersFromController)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyElementsOf(usersFromDb);
         assertThatJson(body).isArray();
     }
 

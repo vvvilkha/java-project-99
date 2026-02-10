@@ -4,7 +4,7 @@ spring:
     hibernate:
       ddl-auto: update
   profiles:
-    default: development
+    default: dev
 
 sentry:
   dsn: ${SENTRY_DSN:}
