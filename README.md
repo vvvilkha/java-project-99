@@ -3,7 +3,7 @@
 [![Java CI](https://sonarcloud.io/api/project_badges/measure?project=vvvilkha_java-project-99&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=vvvilkha_java-project-99)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=vvvilkha_java-project-99&metric=bugs)](https://sonarcloud.io/summary/new_code?id=vvvilkha_java-project-99)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=vvvilkha_java-project-99&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=vvvilkha_java-project-99)
-
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=vvvilkha_java-project-99&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=vvvilkha_java-project-99)
 ## Описание
 
 **Task Manager** — учебный REST API-сервис для управления задачами.

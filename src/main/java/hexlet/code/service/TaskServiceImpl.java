@@ -1,7 +1,6 @@
 package hexlet.code.service;
 
 import hexlet.code.database.entity.Task;
-import hexlet.code.database.repository.LabelRepository;
 import hexlet.code.database.repository.TaskRepository;
 import hexlet.code.dto.task.TaskCreateDTO;
 import hexlet.code.dto.task.TaskDTO;
