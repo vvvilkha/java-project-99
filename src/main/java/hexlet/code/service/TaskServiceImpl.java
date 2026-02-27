@@ -10,11 +10,13 @@ import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.specification.TaskSpecification;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
@@ -22,20 +24,6 @@ public class TaskServiceImpl implements TaskService {
     private final TaskMapper taskMapper;
 
     private final TaskSpecification taskSpecification;
-
-    private final LabelRepository labelRepository;
-
-    public TaskServiceImpl(
-            TaskRepository taskRepository,
-            TaskMapper taskMapper,
-            TaskSpecification taskSpecification,
-            LabelRepository labelRepository
-    ) {
-        this.taskRepository = taskRepository;
-        this.taskMapper = taskMapper;
-        this.taskSpecification = taskSpecification;
-        this.labelRepository = labelRepository;
-    }
 
     @Override
     public List<TaskDTO> getAllTasks(TaskParamsDTO params) {

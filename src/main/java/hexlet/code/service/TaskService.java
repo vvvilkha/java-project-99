@@ -1,0 +1,20 @@
+package hexlet.code.service;
+
+import hexlet.code.dto.task.TaskCreateDTO;
+import hexlet.code.dto.task.TaskDTO;
+import hexlet.code.dto.task.TaskParamsDTO;
+import hexlet.code.dto.task.TaskUpdateDTO;
+
+import java.util.List;
+
+public interface TaskService {
+    List<TaskDTO> getAllTasks(TaskParamsDTO params);
+
+    TaskDTO getTaskById(Long id);
+
+    TaskDTO createTask(TaskCreateDTO taskCreateDTO);
+
+    TaskDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO);
+
+    void deleteTask(Long id);
+}

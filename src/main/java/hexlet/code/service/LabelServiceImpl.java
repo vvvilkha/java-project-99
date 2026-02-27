@@ -7,21 +7,18 @@ import hexlet.code.dto.label.LabelUpdateDTO;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.mapper.LabelMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class LabelServiceImpl implements LabelService {
 
     private final LabelRepository labelRepository;
 
     private final LabelMapper labelMapper;
-
-    public LabelServiceImpl(LabelRepository labelRepository, LabelMapper labelMapper) {
-        this.labelRepository = labelRepository;
-        this.labelMapper = labelMapper;
-    }
 
     @Override
     public List<LabelDTO> getAllLabels() {

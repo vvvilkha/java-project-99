@@ -8,20 +8,17 @@ import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.mapper.TaskStatusMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TaskStatusServiceImpl implements TaskStatusService {
     private final TaskStatusRepository taskStatusRepository;
 
     private final TaskStatusMapper taskStatusMapper;
-
-    public TaskStatusServiceImpl(TaskStatusRepository taskStatusRepository, TaskStatusMapper taskStatusMapper) {
-        this.taskStatusRepository = taskStatusRepository;
-        this.taskStatusMapper = taskStatusMapper;
-    }
 
     @Override
     public List<TaskStatusDTO> getAllTaskStatuses() {
