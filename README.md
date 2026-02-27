@@ -9,7 +9,7 @@
 **Task Manager** — учебный REST API-сервис для управления задачами.
 Проект демонстрирует работу с пользователями, задачами, статусами и метками, а также использует Spring Security для аутентификации.
 
-Продакшен-версия: <https://task-management-pw5o.onrender.com>
+Продакшен-версия: https://task-management-d38l.onrender.com
 
 ## Требования
 
