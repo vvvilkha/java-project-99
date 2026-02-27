@@ -1,13 +1,11 @@
 /build/
 .gradle/
 local.properties
-app/build/
 
 
 /.idea/
 /*.iml
 /jte-classes/
-/app/jte-classes/
 **/jte-classes/
 
 *.log

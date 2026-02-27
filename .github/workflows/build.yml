@@ -33,14 +33,11 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        working-directory: app
 
       - name: Run tests and generate coverage
         run: ./gradlew clean test jacocoTestReport
-        working-directory: app
 
       - name: Run SonarCloud analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonar
-        working-directory: app

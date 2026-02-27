@@ -12,7 +12,7 @@ plugins {
 
 group = "hexlet.code"
 version = "0.0.1-SNAPSHOT"
-description = "app"
+
 
 application {
     mainClass.set("hexlet.code.AppApplication")

@@ -10,42 +10,53 @@ import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.specification.TaskSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class TaskService {
+public class TaskServiceImpl implements TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
-    @Autowired
-    private TaskMapper taskMapper;
+    private final TaskMapper taskMapper;
 
-    @Autowired
-    private TaskSpecification taskSpecification;
+    private final TaskSpecification taskSpecification;
 
-    @Autowired
-    private LabelRepository labelRepository;
+    private final LabelRepository labelRepository;
 
+    public TaskServiceImpl(
+            TaskRepository taskRepository,
+            TaskMapper taskMapper,
+            TaskSpecification taskSpecification,
+            LabelRepository labelRepository
+    ) {
+        this.taskRepository = taskRepository;
+        this.taskMapper = taskMapper;
+        this.taskSpecification = taskSpecification;
+        this.labelRepository = labelRepository;
+    }
+
+    @Override
     public List<TaskDTO> getAllTasks(TaskParamsDTO params) {
         var spec = taskSpecification.build(params);
         return taskRepository.findAll(spec).stream().map(taskMapper::map).toList();
     }
 
+    @Override
     public TaskDTO getTaskById(Long id) {
         return taskMapper.map(taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Task with id=%d not found".formatted(id))));
     }
 
+    @Override
     public TaskDTO createTask(TaskCreateDTO taskCreateDTO) {
         Task task = taskMapper.map(taskCreateDTO);
         taskRepository.save(task);
         return taskMapper.map(task);
     }
 
+    @Override
     public TaskDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO) {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Task with id=%d not found".formatted(id)));
@@ -53,6 +64,7 @@ public class TaskService {
         return taskMapper.map(taskRepository.save(task));
     }
 
+    @Override
     public void deleteTask(Long id) {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Task with id=%d not found".formatted(id)));

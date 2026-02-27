@@ -19,7 +19,6 @@
 ## Как запустить локально
 
 ```bash
-cd app
 ./gradlew bootRun
 ```
 
@@ -28,8 +27,8 @@ cd app
 ## Полезные команды
 
 ```bash
-  cd app
 ./gradlew test        # запуск тестов
 ./gradlew check       # полная проверка (включая линтер)
 ./gradlew build       # сборка проекта
 ```
+
