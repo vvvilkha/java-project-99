@@ -39,7 +39,8 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Transactional
     public TaskStatusDTO createTaskStatus(TaskStatusCreateDTO taskStatusDTO) {
         if (taskStatusRepository.findBySlug(taskStatusDTO.getSlug()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Status with slug '" + taskStatusDTO.getSlug() + "' already exists");
+            throw new ResourceAlreadyExistsException(
+                    "Status with slug '" + taskStatusDTO.getSlug() + "' already exists");
         }
 
         return taskStatusMapper.map(taskStatusRepository.save(taskStatusMapper.map(taskStatusDTO)));
