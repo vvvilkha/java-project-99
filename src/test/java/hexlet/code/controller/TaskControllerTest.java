@@ -124,7 +124,15 @@ class TaskControllerTest {
 
         var body = result.getResponse().getContentAsString();
 
-        assertThatJson(body).isArray();
+        var tasks = taskRepository.findAll();
+
+        assertThatJson(body).isArray().hasSize(tasks.size());
+        assertThatJson(body).isArray().allSatisfy(element ->
+                assertThatJson(element)
+                        .and(v -> v.node("title").isEqualTo(testTask.getName()),
+                             v -> v.node("content").isEqualTo(testTask.getDescription()),
+                             v -> v.node("status").isEqualTo(testTask.getTaskStatus().getSlug()))
+        );
     }
 
     @Test
@@ -147,19 +155,18 @@ class TaskControllerTest {
 
     @Test
     public void testIndexWithAssigneeId() throws Exception {
-        var param = new TaskParamsDTO();
-        param.setAssigneeId(anotherUser.getId());
         taskRepository.save(testTask);
 
-        var result = mockMvc.perform(get("/api/tasks?assigneeId=" + param.getAssigneeId()).with(jwt()))
+        var result = mockMvc.perform(get("/api/tasks?assigneeId=" + testTask.getAssignee().getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
 
+        assertThatJson(body).isArray().hasSize(1);
         assertThatJson(body).isArray().allSatisfy(element ->
                 assertThatJson(element)
-                        .and(v -> v.node("assigneeId").isEqualTo(testTask.getAssignee().getId()))
+                        .and(v -> v.node("assignee_id").isEqualTo(testTask.getAssignee().getId()))
         );
     }
 
@@ -297,5 +304,45 @@ class TaskControllerTest {
                 .andExpect(status().isNoContent());
 
         assertThat(taskRepository.existsById(testTask.getId())).isFalse();
+    }
+
+    @Test
+    void testIndexWithoutAuth() throws Exception {
+        mockMvc.perform(get("/api/tasks"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testShowWithoutAuth() throws Exception {
+        taskRepository.save(testTask);
+        mockMvc.perform(get("/api/tasks/{id}", testTask.getId()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testCreateWithoutAuth() throws Exception {
+        var data = taskMapper.map(testTask);
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(data)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUpdateWithoutAuth() throws Exception {
+        taskRepository.save(testTask);
+        var dto = taskMapper.map(testTask);
+        dto.setTitle("new title");
+        mockMvc.perform(put("/api/tasks/{id}", testTask.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(dto)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testDeleteWithoutAuth() throws Exception {
+        taskRepository.save(testTask);
+        mockMvc.perform(delete("/api/tasks/{id}", testTask.getId()))
+                .andExpect(status().isUnauthorized());
     }
 }

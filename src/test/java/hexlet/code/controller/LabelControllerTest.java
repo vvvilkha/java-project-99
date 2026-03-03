@@ -166,4 +166,44 @@ class LabelControllerTest {
 
         assertThat(data).isNull();
     }
+
+    @Test
+    void testIndexWithoutAuth() throws Exception {
+        mockMvc.perform(get("/api/labels"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testShowWithoutAuth() throws Exception {
+        labelRepository.save(testLabel);
+        mockMvc.perform(get("/api/labels/{id}", testLabel.getId()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testCreateWithoutAuth() throws Exception {
+        var data = Instancio.of(modelGenerator.getLabelModel()).create();
+        mockMvc.perform(post("/api/labels")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(data)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUpdateWithoutAuth() throws Exception {
+        labelRepository.save(testLabel);
+        var data = new HashMap<>();
+        data.put("name", "updated");
+        mockMvc.perform(put("/api/labels/{id}", testLabel.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(data)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testDeleteWithoutAuth() throws Exception {
+        labelRepository.save(testLabel);
+        mockMvc.perform(delete("/api/labels/{id}", testLabel.getId()))
+                .andExpect(status().isUnauthorized());
+    }
 }

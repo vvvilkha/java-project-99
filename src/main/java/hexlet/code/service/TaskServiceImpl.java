@@ -11,11 +11,13 @@ import hexlet.code.mapper.TaskMapper;
 import hexlet.code.specification.TaskSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
@@ -37,6 +39,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskDTO createTask(TaskCreateDTO taskCreateDTO) {
         Task task = taskMapper.map(taskCreateDTO);
         taskRepository.save(task);
@@ -44,6 +47,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO) {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Task with id=%d not found".formatted(id)));
@@ -52,6 +56,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void deleteTask(Long id) {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Task with id=%d not found".formatted(id)));

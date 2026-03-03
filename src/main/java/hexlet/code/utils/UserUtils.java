@@ -26,9 +26,9 @@ public class UserUtils {
     public boolean isAuthor(Long id) {
         User currentUser = getCurrentUser();
         if (currentUser == null) {
-            return true;
+            return false;
         }
 
-        return currentUser.getId() != null && currentUser.getId() == id;
+        return currentUser.getId() != null && currentUser.getId().equals(id);
     }
 }

@@ -30,6 +30,7 @@ public class UserController {
 
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserDTO>> index() {
         var users = userService.getAllUsers();
         return ResponseEntity.ok()

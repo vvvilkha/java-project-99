@@ -9,11 +9,13 @@ import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.mapper.LabelMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class LabelServiceImpl implements LabelService {
 
     private final LabelRepository labelRepository;
@@ -30,10 +32,11 @@ public class LabelServiceImpl implements LabelService {
     @Override
     public LabelDTO getLabelById(Long id) {
         return labelMapper.map(labelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Label with ID " + id + " not found")));
+                .orElseThrow(() -> new NotFoundException("Label with ID " + id + " not found")));
     }
 
     @Override
+    @Transactional
     public LabelDTO createLabel(LabelCreateDTO labelCreateDTO) {
         if (labelRepository.findByName(labelCreateDTO.getName()).isPresent()) {
             throw new ResourceAlreadyExistsException("Label " + labelCreateDTO.getName() + " already exists");
@@ -43,6 +46,7 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
+    @Transactional
     public LabelDTO updateLabel(Long id, LabelUpdateDTO labelUpdateDTO) {
         var label = labelRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Label with ID " + id + " not found"));
@@ -51,6 +55,7 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
+    @Transactional
     public void deleteLabel(Long id) {
         var label = labelRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Label with ID " + id + " not found"));

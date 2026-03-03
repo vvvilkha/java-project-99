@@ -10,11 +10,13 @@ import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.mapper.TaskStatusMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TaskStatusServiceImpl implements TaskStatusService {
     private final TaskStatusRepository taskStatusRepository;
 
@@ -34,15 +36,17 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     }
 
     @Override
+    @Transactional
     public TaskStatusDTO createTaskStatus(TaskStatusCreateDTO taskStatusDTO) {
         if (taskStatusRepository.findBySlug(taskStatusDTO.getSlug()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Status " + taskStatusDTO.getName() + " already exists");
+            throw new ResourceAlreadyExistsException("Status with slug '" + taskStatusDTO.getSlug() + "' already exists");
         }
 
         return taskStatusMapper.map(taskStatusRepository.save(taskStatusMapper.map(taskStatusDTO)));
     }
 
     @Override
+    @Transactional
     public TaskStatusDTO updateTaskStatus(long id, TaskStatusUpdateDTO taskStatusDTO) {
         var taskStatus = taskStatusRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("TaskStatus with id " + id + " not found!"));
@@ -51,6 +55,7 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     }
 
     @Override
+    @Transactional
     public void deleteTaskStatus(long id) {
         var taskStatus = taskStatusRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("TaskStatus with id " + id + " not found!"));

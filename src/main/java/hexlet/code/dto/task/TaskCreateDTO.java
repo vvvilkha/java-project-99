@@ -14,8 +14,9 @@ public class TaskCreateDTO {
     private int index;
 
     @JsonProperty("assignee_id")
-    private long assigneeId;
+    private Long assigneeId;
 
+    @NotBlank
     private String title;
 
     private String content;

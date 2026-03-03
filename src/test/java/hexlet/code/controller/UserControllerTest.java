@@ -197,7 +197,8 @@ class UserControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        var request = delete("/api/users/" + testUser.getId()).with(jwt());
+        var request = delete("/api/users/" + testUser.getId())
+                .with(jwt().jwt(builder -> builder.subject(testUser.getEmail())));
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 

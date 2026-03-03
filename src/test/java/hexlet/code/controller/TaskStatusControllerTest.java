@@ -79,7 +79,15 @@ public class TaskStatusControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        assertThatJson(body).isArray();
+
+        var statuses = taskStatusRepository.findAll();
+
+        assertThatJson(body).isArray().hasSize(statuses.size());
+        assertThatJson(body).isArray().allSatisfy(element ->
+                assertThatJson(element)
+                        .and(v -> v.node("name").isEqualTo(testTaskStatus.getName()),
+                             v -> v.node("slug").isEqualTo(testTaskStatus.getSlug()))
+        );
     }
 
     @Test
