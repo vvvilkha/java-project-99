@@ -5,7 +5,6 @@ import hexlet.code.dto.label.LabelCreateDTO;
 import hexlet.code.dto.label.LabelDTO;
 import hexlet.code.dto.label.LabelUpdateDTO;
 import hexlet.code.exception.NotFoundException;
-import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.mapper.LabelMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,10 +37,6 @@ public class LabelServiceImpl implements LabelService {
     @Override
     @Transactional
     public LabelDTO createLabel(LabelCreateDTO labelCreateDTO) {
-        if (labelRepository.findByName(labelCreateDTO.getName()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Label " + labelCreateDTO.getName() + " already exists");
-        }
-
         return labelMapper.map(labelRepository.save(labelMapper.map(labelCreateDTO)));
     }
 

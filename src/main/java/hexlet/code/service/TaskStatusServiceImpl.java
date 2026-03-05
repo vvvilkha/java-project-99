@@ -6,7 +6,6 @@ import hexlet.code.dto.taskStatus.TaskStatusCreateDTO;
 import hexlet.code.dto.taskStatus.TaskStatusDTO;
 import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
 import hexlet.code.exception.NotFoundException;
-import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.mapper.TaskStatusMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,11 +37,6 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     @Transactional
     public TaskStatusDTO createTaskStatus(TaskStatusCreateDTO taskStatusDTO) {
-        if (taskStatusRepository.findBySlug(taskStatusDTO.getSlug()).isPresent()) {
-            throw new ResourceAlreadyExistsException(
-                    "Status with slug '" + taskStatusDTO.getSlug() + "' already exists");
-        }
-
         return taskStatusMapper.map(taskStatusRepository.save(taskStatusMapper.map(taskStatusDTO)));
     }
 
