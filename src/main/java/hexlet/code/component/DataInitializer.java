@@ -5,10 +5,11 @@ import hexlet.code.database.entity.TaskStatus;
 import hexlet.code.database.entity.User;
 import hexlet.code.database.repository.LabelRepository;
 import hexlet.code.database.repository.TaskStatusRepository;
+import hexlet.code.database.repository.UserRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -17,24 +18,29 @@ import java.util.List;
 @Component
 @Profile("!test")
 public class DataInitializer implements ApplicationRunner {
-    private final UserDetailsManager userService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final TaskStatusRepository taskStatusRepository;
     private final LabelRepository labelRepository;
 
-    public DataInitializer(UserDetailsManager userService,
+    public DataInitializer(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder,
                            TaskStatusRepository taskStatusRepository,
                            LabelRepository labelRepository) {
-        this.userService = userService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.taskStatusRepository = taskStatusRepository;
         this.labelRepository = labelRepository;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        var user = new User();
-        user.setEmail("hexlet@example.com");
-        user.setPasswordDigest("qwerty");
-        userService.createUser(user);
+        if (userRepository.findByEmail("hexlet@example.com").isEmpty()) {
+            var user = new User();
+            user.setEmail("hexlet@example.com");
+            user.setPasswordDigest(passwordEncoder.encode("qwerty"));
+            userRepository.save(user);
+        }
 
         var defaultStatuses = Map.of(
                 "Draft", "draft",
