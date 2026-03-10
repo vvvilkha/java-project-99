@@ -6,6 +6,7 @@ import hexlet.code.database.entity.User;
 import hexlet.code.database.repository.LabelRepository;
 import hexlet.code.database.repository.TaskStatusRepository;
 import hexlet.code.database.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -23,6 +24,12 @@ public class DataInitializer implements ApplicationRunner {
     private final TaskStatusRepository taskStatusRepository;
     private final LabelRepository labelRepository;
 
+    @Value("${app.admin.email:hexlet@example.com}")
+    private String adminEmail;
+
+    @Value("${app.admin.password:qwerty}")
+    private String adminPassword;
+
     public DataInitializer(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            TaskStatusRepository taskStatusRepository,
@@ -35,10 +42,10 @@ public class DataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (userRepository.findByEmail("hexlet@example.com").isEmpty()) {
+        if (userRepository.findByEmail(adminEmail).isEmpty()) {
             var user = new User();
-            user.setEmail("hexlet@example.com");
-            user.setPasswordDigest(passwordEncoder.encode("qwerty"));
+            user.setEmail(adminEmail);
+            user.setPasswordDigest(passwordEncoder.encode(adminPassword));
             userRepository.save(user);
         }
 
